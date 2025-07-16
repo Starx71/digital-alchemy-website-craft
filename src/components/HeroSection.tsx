@@ -47,35 +47,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onWork
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Mesh Background */}
-      <div className="absolute inset-0 mesh-gradient" />
-      
-      {/* Particle System */}
-      <div className="absolute inset-0 pointer-events-none">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="particle bg-white/20"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-            }}
-            animate={{
-              y: [0, -30, -60, -30, 0],
-              x: [0, 20, -10, -30, 0],
-              opacity: [0.6, 1, 0.8, 1, 0.6],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              delay: particle.delay,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/lovable-uploads/e0440f88-650a-421d-a74c-b0dea09b6ed1.png')`
+        }}
+      />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 text-center">
