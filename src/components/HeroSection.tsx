@@ -8,7 +8,15 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick, onWorkClick }) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-background">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/lovable-uploads/e0440f88-650a-421d-a74c-b0dea09b6ed1.png')`
+        }}
+      />
+      
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8 text-center py-20">
         <motion.div
