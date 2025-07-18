@@ -10,11 +10,11 @@ export const StatsSection = () => {
 
   const stats = [
     { 
-      number: 500, 
+      number: 400, 
       suffix: '%', 
       label: 'Average Social Media Growth',
       description: 'Follower increase in 6 months',
-      maxProgress: 100 // For circle animation (500% displayed as 100% circle)
+      maxProgress: 100 // For circle animation (400% displayed as 100% circle)
     },
     { 
       number: 150, 
