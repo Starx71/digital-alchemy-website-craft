@@ -13,25 +13,29 @@ export const StatsSection = () => {
       number: 500, 
       suffix: '%', 
       label: 'Average Social Media Growth',
-      description: 'Follower increase in 6 months'
+      description: 'Follower increase in 6 months',
+      maxProgress: 100 // For circle animation (500% displayed as 100% circle)
     },
     { 
       number: 150, 
       suffix: '+', 
       label: 'Websites Delivered',
-      description: 'High-performance sites launched'
+      description: 'High-performance sites launched',
+      maxProgress: 100 // 150+ shown as full circle
     },
     { 
       number: 98, 
       suffix: '%', 
       label: 'Client Satisfaction Rate',
-      description: 'Happy clients recommend us'
+      description: 'Happy clients recommend us',
+      maxProgress: 98 // Actual percentage for circle
     },
     { 
       number: 24, 
       suffix: '/7', 
       label: 'Dedicated Support',
-      description: 'Always here when you need us'
+      description: 'Always here when you need us',
+      maxProgress: 100 // 24/7 shown as full circle
     }
   ];
 
@@ -99,6 +103,7 @@ interface StatCardProps {
     suffix: string;
     label: string;
     description: string;
+    maxProgress: number;
   };
   index: number;
   inView: boolean;
@@ -106,32 +111,55 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ stat, index, inView }) => {
   const [count, setCount] = useState(0);
+  const [circleProgress, setCircleProgress] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
     if (inView && !hasAnimated) {
       setHasAnimated(true);
-      let start = 0;
-      const end = stat.number;
+      
+      // Animate the counter
+      let currentCount = 0;
+      const targetCount = stat.number;
       const duration = 2000; // 2 seconds
-      const increment = end / (duration / 16); // 60fps
+      const steps = 60; // Animation steps
+      const increment = targetCount / steps;
+      const stepDuration = duration / steps;
 
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
+      const counterTimer = setInterval(() => {
+        currentCount += increment;
+        if (currentCount >= targetCount) {
+          setCount(targetCount);
+          clearInterval(counterTimer);
         } else {
-          setCount(Math.floor(start));
+          setCount(Math.floor(currentCount));
         }
-      }, 16);
+      }, stepDuration);
 
-      return () => clearInterval(timer);
+      // Animate the circle progress
+      let currentProgress = 0;
+      const targetProgress = stat.maxProgress;
+      const progressIncrement = targetProgress / steps;
+
+      const circleTimer = setInterval(() => {
+        currentProgress += progressIncrement;
+        if (currentProgress >= targetProgress) {
+          setCircleProgress(targetProgress);
+          clearInterval(circleTimer);
+        } else {
+          setCircleProgress(currentProgress);
+        }
+      }, stepDuration);
+
+      return () => {
+        clearInterval(counterTimer);
+        clearInterval(circleTimer);
+      };
     }
-  }, [inView, stat.number, hasAnimated]);
+  }, [inView, stat.number, stat.maxProgress, hasAnimated]);
 
   // Calculate progress percentage for circle animation
-  const progress = Math.min(count / stat.number, 1);
+  const progress = circleProgress / 100; // Convert to 0-1 range
   const circumference = 2 * Math.PI * 40; // radius = 40
   const strokeDashoffset = circumference - (progress * circumference);
 
@@ -168,27 +196,28 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, inView }) => {
               strokeWidth="6"
               fill="transparent"
               strokeLinecap="round"
+              strokeDasharray={circumference}
               className="text-pure-white"
-              initial={{ strokeDasharray: circumference, strokeDashoffset: circumference }}
-              animate={inView ? { strokeDashoffset: strokeDashoffset } : { strokeDashoffset: circumference }}
-              transition={{ duration: 2, delay: index * 0.15, ease: "easeOut" }}
+              animate={{ strokeDashoffset: strokeDashoffset }}
+              transition={{ duration: 0.1, ease: "easeOut" }}
             />
           </svg>
           
           {/* Particle burst effect */}
           {hasAnimated && count === stat.number && (
             <div className="absolute inset-0 flex items-center justify-center">
-              {Array.from({ length: 8 }, (_, i) => (
+              {Array.from({ length: 6 }, (_, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-0.5 h-0.5 sm:w-1 sm:h-1 bg-pure-white rounded-full"
-                  initial={{ scale: 0, x: 0, y: 0 }}
+                  initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
                   animate={{
-                    scale: [0, 1, 0],
-                    x: Math.cos((i * 45) * Math.PI / 180) * 20,
-                    y: Math.sin((i * 45) * Math.PI / 180) * 20,
+                    scale: [0, 1.5, 0],
+                    x: Math.cos((i * 60) * Math.PI / 180) * 25,
+                    y: Math.sin((i * 60) * Math.PI / 180) * 25,
+                    opacity: [1, 1, 0]
                   }}
-                  transition={{ duration: 0.8, delay: 2.2 + index * 0.1 }}
+                  transition={{ duration: 1, delay: 2.1 + index * 0.1 }}
                 />
               ))}
             </div>
